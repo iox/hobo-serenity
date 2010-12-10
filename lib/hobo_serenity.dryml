@@ -1,0 +1,9 @@
+<!-- Este fichero añade una tag con los botones de descarga de los informes -->
+<def tag="informe-botones">
+    <a href="&this.ruta_descarga_odt" class="button" style="a:hover{color:#fff}" >
+      Descargar ODT
+    </a>
+    <a href="&this.ruta_descarga_odt" class="button" style="a:hover{color:#fff}" >
+      Descargar PDF
+    </a>
+</def>
