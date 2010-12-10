@@ -5,14 +5,41 @@ Testing plugin for Hobo + Serenity integration
 
 
 
+Installation
+============
+
+script/plugin install https://github.com/iox/hobo-serenity
+
+
+
 Example
 =======
-ordens.rb
+ordens.rb:
 def  nombre_informe
   return "DOC-" + id
 end
 def after_save
   generar_informe
+end
+
+
+Example: Using download buttons
+===============================
+show.dryml:
+<include src="/taglibs/hobo-serenity"/>
+<show-page>
+<append-heading:>
+<informe-botones/>
+</append-heading:>
+</show-page>
+
+
+
+Example: Regenerating a report after child update
+=================================================
+pedidos.rb:
+def after_save
+   orden.generar_informe
 end
     
     
