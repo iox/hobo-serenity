@@ -22,6 +22,10 @@ def after_save
   generar_informe
 end
 
+ordens_controller.rb:
+  #Allow File Downloads
+  include HoboSerenityController
+
 
 Example: Using download buttons
 ===============================
