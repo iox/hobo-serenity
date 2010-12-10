@@ -1,13 +1,20 @@
 HoboSerenity
 ============
 
-Introduction goes here.
+Testing plugin for Hobo + Serenity integration
+
 
 
 Example
 =======
-
-Example goes here.
-
-
-Copyright (c) 2010 [name of plugin creator], released under the MIT license
+ordens.rb
+def  nombre_informe
+  return "DOC-" + id
+end
+def after_save
+  generar_informe
+end
+    
+    
+    
+Copyright (c) 2010 Ignacio Huerta, released under the MIT license
