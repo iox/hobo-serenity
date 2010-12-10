@@ -8,7 +8,7 @@ Testing plugin for Hobo + Serenity integration
 Installation
 ============
 
-script/plugin install https://github.com/iox/hobo-serenity
+script/plugin install git://github.com/iox/hobo-serenity.git
 
 
 
