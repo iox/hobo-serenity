@@ -8,6 +8,5 @@ unless File.exist?('app/views/plantillas_odt')
   FileUtils.mkdir('app/views/plantillas_odt')
 end
 
-#Copiar el fichero dryml
-FileUtils.copy('vendor/plugins/hobo-serenity/lib/hobo-serenity.dryml','app/views/taglibs/hobo-serenity.dryml')
+#Copiar el ejemplo de plantilla
 FileUtils.copy('vendor/plugins/hobo-serenity/ejemplo.odt','app/views/plantillas_odt/ejemplo.odt')
