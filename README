@@ -1,8 +1,19 @@
 HoboSerenity
 ============
 
-Testing plugin for Hobo + Serenity integration
+IMPORTANT: This plugin is my first plugin, and it could be dangerous :)
 
+This plugin tries to simplify the process of integrating two great gems: Hobo and Serenity-ODT. It also uses a Python Script to convert the reports to PDF using OpenOffice.
+
+
+Requirements
+============
+
+* Rails 2.3.8
+* Hobo 1.0.1 gem
+* Serenity-odt gem
+* Git
+* OpenOffice in server mode (listening on localhost:8100)
 
 
 Installation
@@ -14,38 +25,64 @@ script/plugin install git://github.com/iox/hobo-serenity.git
 
 Example
 =======
-ordens.rb:
-def  nombre_informe
-  return "DOC-" + id
-end
-def after_save
-  generar_informe
-end
+ # --- Generación de informes --- #
+  def ruta_informe_1
+    "ORDEN-" + id.to_s
+  end
+  def ruta_informe_2
+    "informes_ordenes/INFO-" + id.to_s
+  end
+  def informes
+    # La función generar_informe recibe primero la ruta del fichero y después el nombre de la plantilla
+    generar_informe (ruta_informe_1, 'informe_orden')
+    generar_informe (ruta_informe_2, 'resumen_orden')
+  end
+  # Utilizamos un callback para que cada vez que se guarde se regeneren las plantillas
+  def after_save
+    informes
+  end
+
+
+
+
+
+Example: Using download buttons
+===============================
 
 ordens_controller.rb:
   #Allow File Downloads
   include HoboSerenityController
 
-
-Example: Using download buttons
-===============================
 show.dryml:
-<include src="/taglibs/hobo-serenity"/>
-<show-page>
-<append-heading:>
-<informe-botones/>
-</append-heading:>
-</show-page>
+  <show-page>
+    <append-heading:>
+      <boton-azul-odt ruta="&this.ruta_informe_1">Descargar primer ODT</boton-azul-odt>
+      <boton-azul-pdf ruta="&this.ruta_informe_1">Descargar primer PDF</boton-azul-pdf>
+      <boton-azul-odt ruta="&this.ruta_informe_2">Descargar segundo ODT</boton-azul-odt>
+      <boton-azul-pdf ruta="&this.ruta_informe_2">Descargar segundo PDF</boton-azul-pdf>
+    </append-heading:>
+  </show-page>
+  <def tag="boton-azul-odt" attrs="ruta,formato">
+      <a href="&this.ruta_descarga_odt(ruta)" class="button" style="a:hover{color:#fff}" param="default"/>
+  </def>
+  <def tag="boton-azul-pdf" attrs="ruta">
+      <a href="&this.ruta_descarga_pdf(ruta)" class="button" style="a:hover{color:#fff}" param="default"/>
+  </def>
+
 
 
 
 Example: Regenerating a report after child update
 =================================================
 pedidos.rb:
-def after_save
-   orden.generar_informe
-end
+  def after_save
+     orden.informes
+  end
+  def after_destroy
+    orden.informes
+  end
+
     
     
     
-Copyright (c) 2010 Ignacio Huerta, released under the MIT license
+Copyright (c) 2010 Ignacio Huerta (http://www.unoycero.com), released under the MIT license
