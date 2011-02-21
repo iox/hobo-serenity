@@ -1,11 +1,8 @@
 # Install hook code here
 
-# Comprobar carpetas. Si no existen, crearlas
-unless File.exist?('informes')
-  FileUtils.mkdir('informes')
-end
-unless File.exist?('app/views/plantillas_odt')
-  FileUtils.mkdir('app/views/plantillas_odt')
+# Check if odt templates folder exists
+unless File.exist?('app/views/odt_templates')
+  FileUtils.mkdir('app/views/odt_templates')
 end
 
 #Copiar el ejemplo de plantilla

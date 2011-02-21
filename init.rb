@@ -1,10 +1,8 @@
-# Include hook code here
-
-# Primero requerimos Serenity
+# First we include Serenity
 require 'serenity'
 ActiveRecord::Base.send(:include, Serenity::Generator)
 
-# Y ahora hobo_serenity.
+# And now HoboSerenity
 require 'hobo-serenity'
 ActiveRecord::Base.send(:include, HoboSerenity)
 

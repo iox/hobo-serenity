@@ -1,74 +1,106 @@
 # HoboSerenity
 
-logger = RAILS_DEFAULT_LOGGER
-#logger.info('patata: el plugin hobo_serenity.rb se ha ejecutado')
+# For debugging: you need to call 'logger' like this before using it
+# logger = RAILS_DEFAULT_LOGGER
 
-# Este módulo se añadirá al modelo
+# This module will be added to the model
 module HoboSerenity
 
-    def generar_informe (ruta_informe, nombre_plantilla)
-#      logger.info('patata: se ha ejecutado el método generar_informe del módulo HoboSerenity')
-#      logger.info('patata: el nombre de la orden es ' + name)
-#      logger.info('patata: el nombre de la clase es ' + self.class.to_s.downcase)
-#      modelo = self.class.to_s.downcase
+    # We include this in order to use "number_to_currency" in the ODT template
+    include ActionView::Helpers::NumberHelper
 
-      #Lo primero: si "ruta_informe" tiene /, hay que comprobar que existe la carpeta
-      carpeta_destino = 'informes/'
-      ruta_informe_split = ruta_informe.split('/')
-      logger.info('patata: la length es ' + ruta_informe_split.length.to_s)
-      ruta_informe_split.each_with_index {|x, y| 
-        if (y != ruta_informe_split.length-1)
-          carpeta_destino += '/' + x
+    def create_document (document_path, template_name)
+      # "ODT_PATH" is the main folder where every document is saved
+      # "document_path" can have subfolders
+      # Here we prepare "document_folder" based on the two previous variables
+      document_folder = ODT_PATH
+      document_path_split = document_path.split('/')
+      document_path_split.each_with_index {|x, y| 
+        if (y != document_path_split.length-1)
+          document_folder += x + '/'
         end
-        logger.info('patata: la y es ' + y.to_s)
       }
-      logger.info('patata: la carpeta destino es ' + carpeta_destino)
-      unless File.exist?(carpeta_destino)
-        FileUtils.mkdir_p(carpeta_destino)
+      
+      # if "document_folder" doesn't exist, create it
+      unless File.exist?(document_folder)
+        FileUtils.mkdir_p(document_folder)
       end
       
-      # Preparar las URLs de los ficheros
-      plantilla = 'app/views/plantillas_odt/'+ nombre_plantilla +'.odt'
-      odt_destino = 'informes/'+ ruta_informe + '.odt'
-      pdf_destino = 'informes/'+ ruta_informe + '.pdf'
+      # Prepare the files paths
+      template = 'app/views/odt_templates/'+ template_name +'.odt'
+      odt_path = document_folder + document_path_split.last + '.odt'
+      pdf_path = document_folder + document_path_split.last + '.pdf'
 
-      # Generar ODT con Serenity
-      render_odt plantilla, odt_destino
+      # Generate ODT with Serenity
+      render_odt template, odt_path
       
-      #Pasar a PDF con OpenOffice
-      comando_pdf = 'python ' +
+      # Convert to PDF with OpenOffice 
+      # OpenOffice should be listening as Server in localhost:8100
+      command = 'python ' +
           'vendor/plugins/hobo-serenity/lib/DocumentConverter.py ' +
-          odt_destino + ' ' + pdf_destino
-      logger.info ('patata: el comando PDF es ' + comando_pdf)
-      system(comando_pdf)
+          odt_path + ' ' + pdf_path
+      system(command)
+      
+      # By default we delete the ODT
+      unless KEEP_ODT
+        File.delete(odt_path)
+      end
+      
     end
     
     
-    def ruta_descarga_odt(ruta_fichero)
-      modelo = self.class.to_s.downcase
-      return "/"+ modelo +"s/descargar_odt/" + id.to_s + '?h=' + rand.to_s + '&ruta=' + ruta_fichero
+    # These are the paths that the download link will use
+    def odt_download_path(document)
+      model = self.class.to_s.downcase
+      return "/"+ model +"s/download_odt/" + id.to_s +
+              '?h=' + rand.to_s + '&document=' + document
     end
     
-    def ruta_descarga_pdf(ruta_fichero)
-      modelo = self.class.to_s.downcase
-      return "/"+ modelo +"s/descargar_pdf/" + id.to_s + '?h=' + rand.to_s + '&ruta=' + ruta_fichero
+    def pdf_download_path(document)
+      model = self.class.to_s.downcase
+      return "/"+ model +"s/download_pdf/" + id.to_s + 
+              '?h=' + rand.to_s + '&document=' + document
     end
 
 end
 
 
-#Este módulo se añadirá al controlador para permitir las descargas
+
+
+# This additional module with be added to the controller to handle downloads
 module HoboSerenityController
-   def descargar_odt
-     #Elaboramos la ruta del fichero y se lo devolvemos al usuario
-     ruta = 'informes/' + params[:ruta] + ".odt"
-     send_file ruta
+   def download_odt
+     # In order to create the document first we need to access the model object
+     controller_name = self.class.to_s.downcase 
+     model_name = controller_name.split('scontroller')[0].humanize
+     object = model_name.constantize.find(params[:id])
+     
+     # The template name is in params, and the document path is in the model
+     template_name = params[:document]
+     document_path = object.send(template_name)
+     
+     # Create the document
+     object.create_document(document_path, template_name)     
+     
+     # Send the file to the user
+     send_file ODT_PATH + document_path + '.odt'
    end 
    
-   def descargar_pdf
-     #Elaboramos la ruta del fichero y se lo devolvemos al usuario
-     ruta = 'informes/' + params[:ruta] + ".pdf"
-     send_file ruta
-   end
+   def download_pdf
+     # In order to create the document first we need to access the model object
+     controller_name = self.class.to_s.downcase 
+     model_name = controller_name.split('scontroller')[0].humanize
+     object = model_name.constantize.find(params[:id])
+     
+     # The template name is in params, and the document path is in the model
+     template_name = params[:document]
+     document_path = object.send(template_name)
+     
+     # Create the document
+     object.create_document(document_path, template_name)     
+     
+     # Send the file to the user
+     send_file ODT_PATH + document_path + '.pdf'
+   end 
 end
 
