@@ -1,13 +1,13 @@
 HoboSerenity
 ============
 
-This plugin tries to simplify the process of integrating two great gems: Hobo and Serenity-ODT. It also uses a Python Script to convert the reports to PDF using OpenOffice.
+This plugin tries to simplify the process of integrating two great gems: Hobo and Serenity-ODT. It also uses a LibreOffice to covvert automatically ODT template into PDF file if you want to.
 
 Thanks to:
 
 * https://github.com/kremso/serenity
 * http://www.artofsolving.com/opensource/pyodconverter
-
+* And of course LibreOffice community all around!
 
 Requirements
 ============
@@ -16,46 +16,41 @@ Requirements
 * Hobo 1.0.1 gem
 * Serenity-odt gem
 * Git
-* OpenOffice in server mode (listening on localhost:8100)
-
+* LibreOffice >= version 4
 
 Installation
 ============
 
-script/plugin install git://github.com/iox/hobo-serenity.git
-
-
+  script/plugin install git://github.com/iox/hobo-serenity.git
 
 How to use
 ==========
 
-First step, a couple of global variable en config/environment.rb. ODT_PATH is the folder in which documents will be saved, and KEEP_ODT ensures ODTs are kept in the filesystem after PDF creation.
+First step, a global variable in config/environment.rb. ODT_PATH is the folder in which documents will be saved, for example:
   # HoboSerenity configuration options
-  ODT_PATH = 'documentos/'
-  KEEP_ODT = true
-  
+  ODT_PATH = 'documents/'
   
 Second step, define the templates and file names you are going to use. The name of the method is the template name, and the string it returns the name of the document you are going to create (without .odt or .pdf).
   # --- Document creation --- #
   def example
     "DOC-" + id.to_s
   end
-  
-  
+
 Third step, add download methods to the controller
-  #Allow File Downloads
+  # Allow File Downloads
   include HoboSerenityController
-  
-  
+
 And finally, add the download buttons to the view:
- <show-page>
-  <append-heading:>
-    <a href="&this.odt_download_path('example')" class="button">Download ODT</a>
-    <a href="&this.pdf_download_path('example')" class="button">Download PDF</a>
-  </append-heading:>
- </show-page>
-    
-    
-    
-    
+  <show-page>
+    <append-heading:>
+      <a href="&this.odt_download_path('example')" class="button">Download ODT</a>
+      <a href="&this.pdf_download_path('example')" class="button">Download PDF</a>
+    </append-heading:>
+  </show-page>
+
+Additionally you can create a document calling "create_document" whenever you need (for instance in a callback or in a controller) this way:
+  create_document(path_where_the_document_will_be_created,template_name_without_extension,boolean_to_keep_odt_file_or_not,boolean_to_create_pdf_file_or_not)
+
+Enjoy!
+ 
 Copyright (c) 2010 Ignacio Huerta (http://www.unoycero.com), released under the MIT license
