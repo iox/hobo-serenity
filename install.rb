@@ -7,3 +7,4 @@ end
 
 # Copy example template
 FileUtils.copy('vendor/plugins/hobo-serenity/example.odt','app/views/odt_templates/example.odt')
+
