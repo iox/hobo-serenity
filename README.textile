@@ -18,48 +18,46 @@ h2. Requirements
 
 h2. Installation
 
-<pre>
-script/plugin install git://github.com/iox/hobo-serenity.git
-</pre>
+pre. script/plugin install git://github.com/iox/hobo-serenity.git
 
 h2. How to use it
 
 *First step*, a global variable in config/environment.rb or your static configuration file.
 ODT_TEMPLATES_PATH should point to the folder in which your templates reside, for example:
-```
+
+pre. 
 # HoboSerenity configuration options
 ODT_TEMPLATES_PATH = 'documents/odt_templates/'
-```
   
 *Second step*, define the templates and the methods you are going to need. Create your templates accordingly to Serenity needs. Then save them in the folder you have determined in the previous step.
 Go to your model and include HoboSerenity:
-```
+
+pre. 
 include HoboSerenity
-```
 
 After that you need to define one more method to instruct Hobo Serenity where to store the final parsed document: it should return the name of the document you are going to create (without .odt or .pdf). For example:
-```
+
+pre. 
 # --- Document creation --- #
 def my_template
   return 'documents/my_documents/DOC-' + id.to_s
 end
-```
 
 *Third step*, add download methods to the controller
-```
+
+pre. 
 # Allow File Downloads
 include HoboSerenityController
-```
 
 *And finally*, add the download buttons to the view:
-```
+
+pre. 
 <show-page>
   <append-heading:>
     <a href="&this.odt_download_path('example')" class="button">Download ODT</a>
     <a href="&this.pdf_download_path('example')" class="button">Download PDF</a>
   </append-heading:>
 </show-page>
-```
 
 Enjoy!
  
