@@ -6,9 +6,6 @@
 # This module will be added to the model
 module HoboSerenity
 
-  # We include this in order to use "number_to_currency" in the ODT template
-  include ActionView::Helpers::NumberHelper
-
   def create_document(document_path, template_name, delete_odt=false, create_pdf=true)
     # document_path: where do you want to store redered template once parsed.
     # template_name: which template do you want to be rendered.
