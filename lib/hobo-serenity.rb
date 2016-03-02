@@ -3,8 +3,15 @@
 # For debugging: you need to call 'logger' like this before using it
 #logger = RAILS_DEFAULT_LOGGER
 
+require 'serenity'
+
 # This module will be added to the model
 module HoboSerenity
+
+  # We include this in order to use "number_to_currency" in the ODT template
+  include ActionView::Helpers::NumberHelper
+
+  include Serenity::Generator
 
   def create_document(document_path, template_name, delete_odt=false, create_pdf=true)
     # document_path: where do you want to store redered template once parsed.
@@ -33,7 +40,6 @@ module HoboSerenity
       `#{odt_to_pdf_cmd}` # In order to avoid race condition trouble, use backticks instead system.
     end
 
-    # By default we delete the ODT
     File.delete(odt_path) if delete_odt == true
   end
     
@@ -62,7 +68,7 @@ module HoboSerenityController
     document_path = object.send(template_name)
 
     # Create the document
-    object.create_document(document_path, template_name)
+    object.create_document(document_path, template_name, false, false)
 
     # Send the file to the user
     send_file document_path + '.odt', :type =>  "application/vnd.oasis.opendocument.text"
@@ -79,7 +85,7 @@ module HoboSerenityController
     document_path = object.send(template_name)
 
     # Create the document
-    object.create_document(document_path, template_name)
+    object.create_document(document_path, template_name, true)
 
     # Send the file to the user
     send_file document_path + '.pdf', :type =>  "application/pdf"

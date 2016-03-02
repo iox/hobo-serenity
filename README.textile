@@ -10,8 +10,8 @@ Thanks to:
 
 h2. Requirements
 
-* Rails 2.3.8
-* Hobo 1.0.1 gem
+* Rails >= 2.3.8
+* Hobo >= 1.0.1 gem
 * Serenity-odt gem
 * Git
 * LibreOffice >= version 4
@@ -29,7 +29,7 @@ pre.
 # HoboSerenity configuration options
 ODT_TEMPLATES_PATH = 'documents/odt_templates/'
   
-*Second step*, define the templates and the methods you are going to need. Create your templates accordingly to Serenity needs. Then save them in the folder you have determined in the previous step.
+*Second step*, define the templates and the methods you are going to need. Create your templates accordingly to Serenity needs: checkout examples folder to get a basic idea, or refer to serenity gem to see more detailed syntax examples. Then save them in the folder you have determined in the previous step.
 Go to your model and include HoboSerenity:
 
 pre. 
@@ -39,7 +39,7 @@ After that you need to define one more method to instruct Hobo Serenity where to
 
 pre. 
 # --- Document creation --- #
-def my_template
+def example
   return 'documents/my_documents/DOC-' + id.to_s
 end
 
@@ -49,16 +49,20 @@ pre.
 # Allow File Downloads
 include HoboSerenityController
 
-*And finally*, add the download buttons to the view:
+*And finally*, add the download buttons to the view and routes. Note that "example" is the template file name, so in this case the template it will be looking for would be "example.odt":
 
 pre. 
 <show-page>
   <append-heading:>
-    <a href="&this.odt_download_path('example')" class="button">Download ODT</a>
-    <a href="&this.pdf_download_path('example')" class="button">Download PDF</a>
+    <a href="&this.odt_download_url('example')" class="button">Download ODT</a>
+    <a href="&this.pdf_download_url('example')" class="button">Download PDF</a>
   </append-heading:>
 </show-page>
 
+pre.
+get 'my_model/download_odt/:id' => 'my_model#download_odt'
+get 'my_model/download_pdf/:id' => 'my_model#download_pdf'
+
 Enjoy!
  
-Copyright (c) 2015 Ignacio Huerta (http://ihuerta.net), released under the MIT license
+Copyright (c) 2016 Ignacio Huerta (http://ihuerta.net), released under the MIT license
