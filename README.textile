@@ -10,8 +10,8 @@ Thanks to:
 
 h2. Requirements
 
-* Rails 2.3.8
-* Hobo 1.0.1 gem
+* Rails >= 2.3.8
+* Hobo >= 1.0.1 gem
 * Serenity-odt gem
 * Git
 * LibreOffice >= version 4
