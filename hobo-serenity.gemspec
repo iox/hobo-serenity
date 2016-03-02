@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.files       = ["lib/hobo-serenity.rb"]
   s.homepage    = 'https://github.com/iox/hobo-serenity'
   s.license     = 'MIT'
+  s.add_dependency(%q<serenity-odt>, [">= 0.2.1"])
+  s.add_dependency(%q<rubyzip>, ["0.9.9"])
 end
