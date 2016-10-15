@@ -36,7 +36,7 @@ module HoboSerenity
       
     # Convert to PDF via LibreOffice 
     if create_pdf == true
-      odt_to_pdf_cmd = "soffice --headless --convert-to pdf --outdir '#{[Rails.root, document_folder].join('/')}' '#{[Rails.root, odt_path].join('/')}' &>>#{[Rails.root,'log',Rails.env + ".log"].join('/')}"
+      odt_to_pdf_cmd = "soffice --headless --convert-to pdf --outdir '#{[Rails.root, document_folder].join('/')}' '#{[Rails.root, odt_path].join('/')}' >>#{[Rails.root,'log',Rails.env + ".log"].join('/')}"
       `#{odt_to_pdf_cmd}` # In order to avoid race condition trouble, use backticks instead system.
     end
 
